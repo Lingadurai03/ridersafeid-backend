@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+enum UserRole {
+  user
+  admin
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  phone       String?   
+  password    String   // hashed
+  fullName        String?  
+  refreshToken String?
+
+  editCount   Int      @default(0) // Max 3 free edits
+  role        UserRole   @default(user) // 'user' | 'admin'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  qrStatus    Boolean  @default(false)
+
+  profile     Profile?  
+  lastSeenNotificationAt DateTime? 
+}
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+  email     String
+  otp       String
+  isUsed    Boolean  @default(false)
+  isVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Profile {
+  id                     String   @id @default(uuid())
+  userId                 String   @unique
+  profileName            String
+  bloodGroup             String
+  address                String
+  pincode                String
+  dob                    DateTime
+  state                  String
+  city                   String
+  imageUrl               String? // optional rider image
+  showPrivateData        Boolean  @default(false)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  updateCount     Int      @default(0) 
+  isPremium       Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+  emergencyContacts EmergencyContact[]
+}
+
+model EmergencyContact {
+  id         String   @id @default(uuid())
+  profileId  String
+  name       String
+  phone      String
+
+  profile    Profile  @relation(fields: [profileId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
