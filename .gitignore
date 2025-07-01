@@ -1,3 +1,38 @@
-node_modules
-dist
-.env
+# -------------------------
+# Node modules
+node_modules/
+
+# -------------------------
+# Build output
+dist/
+**/dist/
+out/
+expo/
+
+# -------------------------
+# TypeScript
+*.tsbuildinfo
+
+# -------------------------
+# Env files
+.env*
+!.env.example
+
+# -------------------------
+# Logs
+*.log
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -------------------------
+# Git
+*.orig
+
+# -------------------------
+# IDEs / System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
