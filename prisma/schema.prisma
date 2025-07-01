@@ -6,67 +6,63 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum UserRole {
-  user
-  admin
-}
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  phone       String?   
-  password    String   // hashed
-  fullName        String?  
-  refreshToken String?
-
-  editCount   Int      @default(0) // Max 3 free edits
-  role        UserRole   @default(user) // 'user' | 'admin'
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  qrStatus    Boolean  @default(false)
-
-  profile     Profile?  
-  lastSeenNotificationAt DateTime? 
+  id                     String    @id @default(uuid())
+  email                  String    @unique
+  password               String
+  createdAt              DateTime  @default(now())
+  editCount              Int       @default(0)
+  phone                  String?
+  updatedAt              DateTime  @updatedAt
+  fullName               String?
+  refreshToken           String?
+  qrStatus               Boolean   @default(false)
+  role                   UserRole  @default(user)
+  lastSeenNotificationAt DateTime?
+  profile                Profile?
 }
 
 model EmailVerification {
-  id        String   @id @default(uuid())
-  email     String
-  otp       String
-  isUsed    Boolean  @default(false)
-  isVerified Boolean @default(false)
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  email      String
+  otp        String
+  isUsed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  isVerified Boolean  @default(false)
 }
 
 model Profile {
-  id                     String   @id @default(uuid())
-  userId                 String   @unique
-  profileName            String
-  bloodGroup             String
-  address                String
-  pincode                String
-  dob                    DateTime
-  state                  String
-  city                   String
-  imageUrl               String? // optional rider image
-  showPrivateData        Boolean  @default(false)
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-  updateCount     Int      @default(0) 
-  isPremium       Boolean  @default(false)
-
-  user User @relation(fields: [userId], references: [id])
+  id                String             @id @default(uuid())
+  userId            String             @unique
+  profileName       String
+  bloodGroup        String
+  address           String
+  pincode           String
+  state             String
+  city              String
+  imageUrl          String?
+  showPrivateData   Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  dob               DateTime
+  isPremium         Boolean            @default(false)
+  updateCount       Int                @default(0)
   emergencyContacts EmergencyContact[]
+  user              User               @relation(fields: [userId], references: [id])
 }
 
 model EmergencyContact {
-  id         String   @id @default(uuid())
-  profileId  String
-  name       String
-  phone      String
+  id        String   @id @default(uuid())
+  profileId String
+  name      String
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile  @relation(fields: [profileId], references: [id])
+}
 
-  profile    Profile  @relation(fields: [profileId], references: [id])
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+enum UserRole {
+  user
+  admin
 }
