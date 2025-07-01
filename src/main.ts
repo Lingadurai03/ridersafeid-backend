@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
+    console.log(process.env.DATABASE_URL + '❤️');
     console.log('NODE_ENV at runtime:', process.env.NODE_ENV || '❌ Not found');
     console.log(
         'ACCESS_TOKEN_SECRET at runtime:',
